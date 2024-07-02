@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Log;
 
 class ColorsController extends Controller
 {
-    public function store(AdminCheckRequest $request)
+    public function store(Request $request)
     {
 
         try {
@@ -20,11 +20,14 @@ class ColorsController extends Controller
             ColorModel::create([
                 'value'=>$data
             ]);
-            return redirect()->route('showTable',['table'=>'colors'])->with('success','Uspesno!');
+            return response()->json([
+                'message' => 'Uspešno ažurirano!',
+
+            ], 200);
         }
         catch (\Exception $e){
             Log::error('Greška prilikom izvršavanja: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Boja nije kreirana!');
+            return response()->json(['error' => 'Došlo je do greške.'], 500);
         }
 
     }
@@ -55,11 +58,14 @@ class ColorsController extends Controller
 
             $table = ColorModel::find($id);
             $table->delete();
-            return redirect()->route('showTable',['table'=>'colors'])->with('success','Uspesno!');
+            return response()->json([
+                'message' => 'Uspešno ažurirano!',
+
+            ], 200);
         }
         catch (\Exception $e){
             Log::error('Greška prilikom izvršavanja: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Boja nije kreirana!');
+            return response()->json(['error' => 'Došlo je do greške.'], 500);
         }
 
     }

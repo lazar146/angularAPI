@@ -30,12 +30,15 @@ class BrandsController extends Controller
                 'name'=>'required|string|max:255'
             ]);
             $table = BrandModel::create($validationData);
-            return redirect()->route('admin')->with('success', 'Brend je uspešno kreiran!');
+            return response()->json([
+                'message' => 'Uspešno ažurirano!',
+
+            ], 200);
         }
         catch (\Exception $e)
         {
             Log::error('Greška prilikom izvršavanja: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Brend nije kreiran!');
+            return response()->json(['error' => 'Došlo je do greške.'], 500);
         }
 
     }
@@ -66,10 +69,13 @@ class BrandsController extends Controller
         try {
             $col = BrandModel::find($id);
             $col->delete();
-            return redirect()->route('admin')->with('message', 'Uspešno izvršeno!');
+            return response()->json([
+                'message' => 'Uspešno ažurirano!',
+
+            ], 200);
         }
         catch (\Exception $e){
             Log::error('Greška prilikom izvršavanja: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Došlo je do greške prilikom izvršavanja.');
+            return response()->json(['error' => 'Došlo je do greške.'], 500);
         }
     }}

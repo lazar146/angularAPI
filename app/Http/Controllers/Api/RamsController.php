@@ -30,16 +30,19 @@ class RamsController extends Controller
 
         try {
 
-            $data = $request->input('value');
+            $data = $request->input('name');
 
             RamModel::create([
-                'value'=>$data
+                'name'=>$data
             ]);
-            return redirect()->route('showTable',['table'=>'ram_specs'])->with('success','Uspesno!');
+            return response()->json([
+                'message' => 'Uspešno ažurirano!',
+
+            ], 200);
         }
         catch (\Exception $e){
             Log::error('Greška prilikom izvršavanja: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Brend nije kreiran!');
+            return response()->json(['error' => 'Došlo je do greške.'], 500);
         }
 
     }
@@ -50,7 +53,7 @@ class RamsController extends Controller
 //
             $row = RamModel::find($id);
             $name = $request->input('name');
-            $row->value=$name;
+            $row->name=$name;
             $row->save();
             return response()->json([
                 'message' => 'Uspešno ažurirano!',
@@ -69,11 +72,14 @@ class RamsController extends Controller
 
             $table = RamModel::find($id);
             $table->delete();
-            return redirect()->route('showTable',['table'=>'ram_specs'])->with('success','Uspesno!');
+            return response()->json([
+                'message' => 'Uspešno ažurirano!',
+
+            ], 200);
         }
         catch (\Exception $e){
             Log::error('Greška prilikom izvršavanja: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Brend nije kreiran!');
+            return response()->json(['error' => 'Došlo je do greške.'], 500);
         }
 
     }

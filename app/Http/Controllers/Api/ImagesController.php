@@ -16,7 +16,7 @@ class ImagesController extends Controller
     public function store(Request $request)
     {
         $model_id = $request->input('model_id');
-        $image_name = $request->input('name');
+        $image_name = $request->input('image_name');
 
         try {
             ImageModel::create([
@@ -26,11 +26,14 @@ class ImagesController extends Controller
 
             ]);
 
-            return redirect()->route('showTable',['table'=>'images'])->with('success', 'Uspešno uneto!');
+            return response()->json([
+                'message' => 'Uspešno ažurirano!',
+
+            ], 200);
         }
         catch (\Exception $e){
             Log::error('Greška prilikom izvršavanja: ' . $e->getMessage());
-            return redirect()->back()->with('Error');
+            return response()->json(['error' => 'Došlo je do greške.'], 500);
         }
     }
 
@@ -66,11 +69,14 @@ class ImagesController extends Controller
 
             $table = ImageModel::find($id);
             $table->delete();
-            return redirect()->route('showTable',['table'=>'images'])->with('success','Uspesno!');
+            return response()->json([
+                'message' => 'Uspešno ažurirano!',
+
+            ], 200);
         }
         catch (\Exception $e){
             Log::error('Greška prilikom izvršavanja: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Nije kreiran!');
+            return response()->json(['error' => 'Došlo je do greške.'], 500);
         }
     }
 }

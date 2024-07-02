@@ -57,7 +57,7 @@ class ProductController extends Controller
         try {
 
             $name = $request->input('name');
-            $des = $request->input('des');
+            $des = $request->input('description');
             $brend = $request->input('brand_id');
             $ram = $request->input('ram_id');
             $color = $request->input('color_id');
@@ -66,18 +66,21 @@ class ProductController extends Controller
             ModelsModel::create([
                 'name'=>$name,
                 'description'=>$des,
-                'brend_id'=>$brend,
+                'brand_id'=>$brend,
                 'ram_id'=>$ram,
                 'color_id'=>$color,
 
 
             ]);
 
-            return redirect()->route('showTable',['table'=>'models'])->with('success', 'Successful.');
+            return response()->json([
+                'message' => 'Uspešno ažurirano!',
+
+            ], 200);
         }
         catch (\Exception $e){
             Log::error('Greška prilikom izvršavanja: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Nije kreiran!');
+            return response()->json(['error' => 'Došlo je do greške.'], 500);
         }
 
     }
@@ -106,7 +109,7 @@ class ProductController extends Controller
         try {
             $row = ModelsModel::find($id);
             $name = $request->input('name');
-            $des = $request->input('des');
+            $des = $request->input('description');
             $brend = $request->input('brand_id');
             $ram = $request->input('ram_id');
             $color = $request->input('color_id');
@@ -120,11 +123,14 @@ class ProductController extends Controller
 
 
             $row->save();
-            return redirect()->route('showTable',['table'=>'models'])->with('success', 'Successful.');
+            return response()->json([
+                'message' => 'Uspešno ažurirano!',
+                'data' => $row
+            ], 200);
         }
         catch (\Exception $e){
             Log::error('Greška prilikom izvršavanja: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Nije kreiran!');
+            return response()->json(['error' => 'Došlo je do greške.'], 500);
         }
     }
 
@@ -137,11 +143,14 @@ class ProductController extends Controller
 
             $table = ModelsModel::find($id);
             $table->delete();
-            return redirect()->route('showTable',['table'=>'models'])->with('success','Uspesno!');
+            return response()->json([
+                'message' => 'Uspešno ažurirano!',
+
+            ], 200);
         }
         catch (\Exception $e){
             Log::error('Greška prilikom izvršavanja: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Nije kreiran!');
+            return response()->json(['error' => 'Došlo je do greške.'], 500);
         }
 
     }

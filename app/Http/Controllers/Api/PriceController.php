@@ -14,19 +14,22 @@ class PriceController extends Controller
     {
 
         try {
-            $msc_id = $request->input('id');
+            $msc_id = $request->input('model_id');
             $price = $request->input('price');
-            $old_price = $request->input('oldPrice');
+            $old_price = $request->input('old_price');
             PriceModel::create([
                 'model_id'=>$msc_id,
                 'price'=>$price,
                 'old_price'=>$old_price
             ]);
-            return redirect()->route('showTable',['table'=>'price'])->with('success','Uspesno!');
+            return response()->json([
+                'message' => 'Uspešno ažurirano!',
+
+            ], 200);
         }
         catch (\Exception $e){
             Log::error('Greška prilikom izvršavanja: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Nije kreiran!');
+            return response()->json(['error' => 'Došlo je do greške.'], 500);
         }
 
     }
@@ -37,17 +40,23 @@ class PriceController extends Controller
         try {
 //
             $row = PriceModel::find($id);
+            $model  =$request->input('model_id');
             $price = $request->input('price');
-            $oldPrice = $request->input('oldPrice');
-
+            $oldPrice = $request->input('old_price');
+            $updated_at=$request->input('updated_at');
+            $row->model_id=$model;
             $row->price=$price;
             $row->old_price=$oldPrice;
+            $row->updated_at = $updated_at;
             $row->save();
-            return redirect()->route('showTable',['table'=>'price'])->with('success','Uspesno!');
+            return response()->json([
+                'message' => 'Uspešno ažurirano!',
+                'data' => $row
+            ], 200);
         }
         catch (\Exception $e){
             Log::error('Greška prilikom izvršavanja: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Nije kreiran!');
+            return response()->json(['error' => 'Došlo je do greške.'], 500);
         }
     }
 
@@ -57,11 +66,14 @@ class PriceController extends Controller
 
             $table = PriceModel::find($id);
             $table->delete();
-            return redirect()->route('showTable',['table'=>'price'])->with('success','Uspesno!');
+            return response()->json([
+                'message' => 'Uspešno ažurirano!',
+
+            ], 200);
         }
         catch (\Exception $e){
             Log::error('Greška prilikom izvršavanja: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Nije kreiran!');
+            return response()->json(['error' => 'Došlo je do greške.'], 500);
         }
 
     }
